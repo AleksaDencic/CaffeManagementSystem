@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <!-- Resources for report1Chart -->
+    <script src="https://www.amcharts.com/lib/3/amcharts.js"></script>
+    <script src="https://www.amcharts.com/lib/3/serial.js"></script>
+    <script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
+    <script src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
+    <link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="/css/reportChart.css">
+    <link rel="stylesheet" href="/css/indexAdmin.css">
+    <% include partials/bootstrap %>
+    <title><%= title %></title>
+</head>
+<body>
+    <% include partials/navbar_admin %>
+    <br><br><br><br>
+    <div id="chartdiv"></div>
+    
+<script>
+           
+    function generatechartDataAmount() {  
+                              
+        var data = [];                
+        var amounts2017 = [];
+        var amounts2018 = [];
+        var dates = [];
+
+        <% for (var i = 0; i < orders.length; i++) { %>
+            var datum = new Date("<%= orders[i]._id %>");
+
+            if(datum.toString().includes('2017')){
+                amounts2017.push(<%= orders[i].amount %>);
+            }
+
+            if(datum.toString().includes('2018')){
+                dates.push(datum);
+                amounts2018.push(<%= orders[i].amount %>);
+            }
+            
+        <% } %>
+
+
+        for (var i = 0; i < dates.length; i++) {
+            data.push({
+                date: dates[i],
+                amount2018: amounts2018[i],
+                amount2017: amounts2017[i]                        
+            });
+        }
+        return data;
+    }
+
+
+    var chartDataAmount = generatechartDataAmount();
+    
+    
+    
+    var chart = AmCharts.makeChart("chartdiv", {
+        "type": "serial",
+        "theme": "none",
+        "dataDateFormat": "YYYY-MM-DD",
+        "precision": 0,
+        "valueAxes": [{
+            "id": "v1",
+            "title": "amount",
+            "position": "left",
+            "autoGridCount": false,
+            "labelFunction": function(value) {
+                return Math.round(value);
+            }
+        }],
+        "graphs": [{
+            "id": "g3",
+            "valueAxis": "v1",
+            "lineColor": "#edc30b",
+            "fillColors": "#fdd81a",
+            "fillAlphas": 1,
+            "type": "column",
+            "title": "2017",
+            "valueField": "amount2017",
+            "clustered": false,
+            "columnWidth": 0.5,
+            "legendValueText": "[[value]]",
+            "balloonText": "[[title]]<br /><b style='font-size: 130%'>[[value]]</b>"
+        }, {
+            "id": "g4",
+            "valueAxis": "v1",
+            "lineColor": "#20acd4",
+            "fillColors": "#76BEE0",
+            "fillAlphas": 1,
+            "type": "column",
+            "title": "2018",
+            "valueField": "amount2018",
+            "clustered": false,
+            "columnWidth": 0.3,
+            "legendValueText": "[[value]]",
+            "balloonText": "[[title]]<br /><b style='font-size: 130%'>[[value]]</b>"
+        }],
+        "chartScrollbar": {
+            "graph": "g4",
+            "oppositeAxis": false,
+            "offset": 30,
+            "scrollbarHeight": 30,
+            "backgroundAlpha": 0,
+            "selectedBackgroundAlpha": 0.1,
+            "selectedBackgroundColor": "#888888",
+            "graphFillAlpha": 0,
+            "graphLineAlpha": 0.5,
+            "selectedGraphFillAlpha": 0,
+            "selectedGraphLineAlpha": 1,
+            "autoGridCount": true,
+            "color": "#AAAAAA"
+        },
+        "chartCursor": {
+            "pan": true,
+            "valueLineEnabled": true,
+            "valueLineBalloonEnabled": true,
+            "cursorAlpha": 0,
+            "valueLineAlpha": 0.2
+        },
+        "categoryField": "date",
+        "categoryAxis": {
+            "parseDates": true,
+            "dashLength": 1,
+            "minorGridEnabled": true
+        },
+        "legend": {
+            "useGraphSettings": true,
+            "position": "top"
+        },
+        "balloon": {
+            "borderThickness": 1,
+            "shadowAlpha": 0
+        },
+        "export": {
+            "enabled": true
+        },
+        "dataProvider": chartDataAmount,
+        "titles": [{
+            "text": "Amount per day",
+            "size": 30
+        }]
+    });
+    </script>
+
+</body>
+</html>

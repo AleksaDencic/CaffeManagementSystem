@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="css/style.css" rel="stylesheet">
+        <% include partials/bootstrap %>
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.css">
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
+        <link rel="stylesheet" href="/css/dataTables.css">
+        <script type="text/javascript" src="/js/dataTables.js"></script>
+        <link rel="stylesheet" href="/css/indexAdmin.css">
+        <title>Waiters rank list</title>
+    </head>
+    <body>
+        <% include partials/navbar_admin %>
+        <br><br><br>
+        <h1 align='center'>Waiters rank list</h1>
+        <br>
+        <div id="dvData">
+            <table style="width:100%" id="tableDataa" class="table table-striped table-bordered" border="1">
+                <thead>
+                    <tr>
+                        <th>User</th>                        
+                        <th>Total amount</th>
+                        <th>Number of orders</th>  
+                        <th>Average amount by order</th>                      
+                    </tr>
+                </thead>
+                <tbody>
+                    <% for(var i = 0; i < usersAmounts.length; i++){  %>
+                        <tr>
+                            <% for(var j = 0; j < users.length; j++){ %>
+                                <% if(JSON.stringify(usersAmounts[i]._id) == JSON.stringify(users[j]._id)){ %>  
+                                    <td> <%= users[j].first_name %> <%= users[j].last_name %> </td>
+                                    <td><%= usersAmounts[i].amount %></td>
+                                    <td><%= usersAmounts[i].numOrders %></td>
+                                    <td><%= (usersAmounts[i].amount / usersAmounts[i].numOrders).toFixed(2) %></td>
+                                <% } %>
+                            <% } %> 
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+        <br><br>
+    </body>
+</html>
